@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Itim&display=swap" rel="stylesheet">
+    <title>Reading for Information</title>
+    <link rel="icon" type="image/x-icon" href="./assets/Logo_last.png" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: url("assets/Backgrounds.png");
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            object-fit: cover;
+            min-height: 100vh;
+        }
+
+        #heading {
+            text-align: center;
+            background-color: whitesmoke;
+            padding: 10px 20px;
+            margin: 10px auto;
+            color: black;
+            font-size: 2em;
+            font-weight: 600;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            width: fit-content;
+            border-radius: 10px;
+        }
+
+        .activity {
+            margin: 20px auto;
+            padding: 0 2%;
+            display: flex;
+            gap: 2%;
+            align-items: flex-start;
+        }
+
+        /* Question Buttons Sidebar - 6% */
+        .sidebar {
+            width: 100px;
+            height: fit-content;
+            max-height: 65vh;
+            overflow-y: auto;
+        }
+
+        .sidebar h3 {
+            color: white;
+            text-align: center;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+        }
+
+        .questionButtons {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        
+       .qBtn {
+            padding: 12% 9%;
+            border: none;
+            border-radius: 10px;
+            background-color: #f5f5f5; /* Grayish white background */
+            color: black;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            width: 85%;
+            text-align: center;
+            box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.8); /* Dark shadow bottom right */
+            position: relative;
+        }
+
+        .qBtn:hover {
+            background-color: #e8e8e8;
+            transform: translateY(-1px);
+            box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.7);
+        }
+
+        .qBtn.active {
+            background-color: #f5f5f5;
+            box-shadow: none; /* Remove shadow when active */
+            border: 3px solid #000; /* Dark black outline */
+            transform: translateY(2px); /* Pressed effect */
+        }
+
+        .qBtn:active {
+            box-shadow: none;
+            border: 3px solid #000;
+            transform: translateY(2px);
+        }
+
+        /* Story Section - 45% */
+        .storySection {
+            flex: 0 0 40%;
+            background: white;
+            border-radius: 20px;
+            padding: 15px 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            max-height: 70vh;
+            min-height: 60vh;
+            overflow-y: auto;
+        }
+
+        .storyContent {
+            font-size: 1.2em;
+           
+            color: #333;
+        }
+
+        .storyContent p {
+            margin-bottom: 15px;
+        }
+
+        .storyContent strong {
+            color: #667eea;
+        }
+
+        /* Question Section - 45% */
+        .questionSection {
+            flex: 0 0 50%;
+            display: flex;
+            flex-direction: column;
+           
+        }
+
+        .questionContainer {
+            background: white;
+            border-radius: 20px;
+            padding: 15px 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+             max-height: 70vh;
+            min-height: 70vh;
+            overflow-y: auto;
+        }
+
+        .questionText {
+            font-size: 1.2em;
+            margin-bottom: 8px;
+            color: #333;
+            line-height: 1.4;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .optionGrid {
+            display: grid;
+            grid-template-columns: repeat(1, 1fr);
+            gap: 15px;
+            margin-bottom: 15px;
+            flex: 1;
+        }
+
+        .optionBtn {
+            padding: 15px 20px;
+            border: 3px solid #ddd;
+            border-radius: 15px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.3em;
+            text-align: center;
+            position: relative;
+        }
+
+        .optionBtn:hover {
+            border-color: #667eea;
+            background: #f8f9ff;
+            transform: translateX(5px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .optionBtn.correct {
+            background: #d4edda;
+            border-color: #4CAF50;
+            color: #155724;
+            box-shadow: 0 8px 25px rgba(76, 175, 80, 0.4);
+        }
+
+        .optionBtn.incorrect {
+            background: #f8d7da;
+            border-color: #f44336;
+            color: #721c24;
+            box-shadow: 0 8px 25px rgba(244, 67, 54, 0.4);
+        }
+
+        .feedbackSection {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .feedbackText {
+            font-size: 1.2em;
+            font-weight: bold;
+            flex: 1;
+        }
+
+        .emoji {
+            font-size: 1.5em;
+            margin-right: 10px;
+        }
+
+        .nextBtn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 25px;
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            color: white;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .nextBtn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(76, 175, 80, 0.4);
+        }
+
+        .finalScreen {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 400px;
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            border-radius: 20px;
+            color: white;
+            font-size: 2em;
+            text-align: center;
+        }
+
+        /* Scrollbar styling */
+        .storySection::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        .storySection::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        .storySection::-webkit-scrollbar-thumb {
+            background: #667eea;
+            border-radius: 10px;
+        }
+
+        .storySection::-webkit-scrollbar-thumb:hover {
+            background: #764ba2;
+        }
+
+        /* Question Container Scrollbar styling */
+        .questionContainer::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        .questionContainer::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        .questionContainer::-webkit-scrollbar-thumb {
+            background: #667eea;
+            border-radius: 10px;
+        }
+
+        .questionContainer::-webkit-scrollbar-thumb:hover {
+            background: #764ba2;
+        }
+        /* Final full screen mode */
+.fullscreen-final .sidebar,
+.fullscreen-final .storySection {
+    display: none !important;
+}
+
+.fullscreen-final .questionSection {
+    flex: 0 0 100% !important;
+    max-width: 100% !important;
+}
+
+.fullscreen-final .questionContainer {
+    max-height: none;
+    height: 70vh;
+}
+
+
+        /* Responsive design */
+        
+    </style>
+</head>
+
+<body>
+    <div>
+        <p id="heading">Reading for Information</p>
+    </div>
+
+    <div class="activity">
+        <!-- Left Sidebar - Question Buttons (6%) -->
+        <div class="sidebar">
+            <div class="questionButtons" id="questionButtons"></div>
+        </div>
+
+        <!-- Middle - Story Section (45%) -->
+        <div class="storySection">
+            <div class="storyContent" id="storyContent"></div>
+        </div>
+
+        <!-- Right - Question Section (45%) -->
+        <div class="questionSection">
+            <div class="questionContainer">
+                <div id="questionContent" class="questionContent"></div>
+
+                <div class="finalScreen" id="finalScreen" style="display:none;">
+                    <div>
+                        <h2>🎉 Well Done!</h2>
+                        <p>You've completed all questions!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentIndex = 0;
+        let selectedAnswer = null;
+        let data = [
+  
+  
+  
+ 
+  {
+    "questionNo": "Q1",
+    "story": "<b>\"South\"<br>by Ernest Shackleton (1919)</b><br><br><b>Passage 1</b><br>The high winds that had prevailed for four and a half days gave way to a gentle southerly breeze in the evening of December 29. Owing to the drift, we were actually eleven miles farther north than we had been on December 25. But we made fairly good progress on the 30th in fine, clear weather. The ship followed a long lead to the south-east during the afternoon and evening, and at 11 p.m. we crossed the Antarctic Circle.<br><br><b>Passage 2</b><br>An examination of the horizon disclosed considerable breaks in the vast circle of pack-ice, interspersed with bergs of different sizes. Leads could be traced in various directions, but I looked in vain for an indication of open water. The sun did not set that night, and as it was concealed behind a bank of clouds we had a glow of crimson and gold to the southward, with delicate pale green reflections in the water of the lanes to the south-east.<br><br><b>Passage 3</b><br>The ship had a serious encounter with the ice on the morning of December 31. We were stopped first by floes closing around us, and then about noon the Endurance got jammed between two floes heading east-north-east. The pressure heeled the ship over six degrees while we were getting an ice-anchor onto the floe in order to heave astern and thus assist the engines, which were running at full speed. The effort was successful.<br><br><b>Passage 4</b><br>Immediately afterwards, at the spot where the Endurance had been held, slabs of ice 50 ft. by 15 ft. and 4 ft. thick were forced ten or twelve feet up on the lee floe at an angle of 45°. The pressure was severe, and we were not sorry to have the ship out of its reach. The noon position was lat. 66° 47′ S., long. 15° 52′ W., and the run for the preceding twenty-four hours was 51 miles S. 29° E.<br><br><b>Passage 5</b><br>Worsley came down from his lofty seat and met Wild, Hudson, and myself on the bridge, where we shook hands and wished one another a happy and successful New Year. Since entering the pack on December 11, we had come 480 miles, through loose and close pack-ice.<br><br><b>Passage 6</b><br>We had pushed and fought the little ship through, and she had stood the test well, though the propeller had received some shrewd blows against hard ice and the vessel had been driven against the floe until she had fairly mounted up on it and slid back rolling heavily from side to side.",
+    "question": "Nisha skimmed all six passages before looking at the questions. What is the text mainly about?",
+    "options": [
+      "The ship sinking and the crew abandoning it on the ice",
+      "A scientific study of the different sizes of icebergs",
+      "The ship's slow, difficult progress through the pack ice at the turn of the year",
+      "A New Year party held by the crew on the ship's deck"
+    ],
+    "correct": 2
+  },
+  {
+    "questionNo": "Q2",
+    "story": "<b>\"South\"<br>by Ernest Shackleton (1919)</b><br><br><b>Passage 1</b><br>The high winds that had prevailed for four and a half days gave way to a gentle southerly breeze in the evening of December 29. Owing to the drift, we were actually eleven miles farther north than we had been on December 25. But we made fairly good progress on the 30th in fine, clear weather. The ship followed a long lead to the south-east during the afternoon and evening, and at 11 p.m. we crossed the Antarctic Circle.<br><br><b>Passage 2</b><br>An examination of the horizon disclosed considerable breaks in the vast circle of pack-ice, interspersed with bergs of different sizes. Leads could be traced in various directions, but I looked in vain for an indication of open water. The sun did not set that night, and as it was concealed behind a bank of clouds we had a glow of crimson and gold to the southward, with delicate pale green reflections in the water of the lanes to the south-east.<br><br><b>Passage 3</b><br>The ship had a serious encounter with the ice on the morning of December 31. We were stopped first by floes closing around us, and then about noon the Endurance got jammed between two floes heading east-north-east. The pressure heeled the ship over six degrees while we were getting an ice-anchor onto the floe in order to heave astern and thus assist the engines, which were running at full speed. The effort was successful.<br><br><b>Passage 4</b><br>Immediately afterwards, at the spot where the Endurance had been held, slabs of ice 50 ft. by 15 ft. and 4 ft. thick were forced ten or twelve feet up on the lee floe at an angle of 45°. The pressure was severe, and we were not sorry to have the ship out of its reach. The noon position was lat. 66° 47′ S., long. 15° 52′ W., and the run for the preceding twenty-four hours was 51 miles S. 29° E.<br><br><b>Passage 5</b><br>Worsley came down from his lofty seat and met Wild, Hudson, and myself on the bridge, where we shook hands and wished one another a happy and successful New Year. Since entering the pack on December 11, we had come 480 miles, through loose and close pack-ice.<br><br><b>Passage 6</b><br>We had pushed and fought the little ship through, and she had stood the test well, though the propeller had received some shrewd blows against hard ice and the vessel had been driven against the floe until she had fairly mounted up on it and slid back rolling heavily from side to side.",
+    "question": "Which sentence tells the reader what Passage 3 is about?",
+    "options": [
+      "\"The ship had a serious encounter with the ice on the morning of December 31.\"",
+      "\"The effort was successful.\"",
+      "\"The noon position was lat. 66° 47′ S., long. 15° 52′ W.\"",
+      "\"Since entering the pack on December 11 we had come 480 miles.\""
+    ],
+    "correct": 0
+  },
+  {
+    "questionNo": "Q3",
+    "story": "<b>\"South\"<br>by Ernest Shackleton (1919)</b><br><br><b>Passage 1</b><br>The high winds that had prevailed for four and a half days gave way to a gentle southerly breeze in the evening of December 29. Owing to the drift, we were actually eleven miles farther north than we had been on December 25. But we made fairly good progress on the 30th in fine, clear weather. The ship followed a long lead to the south-east during the afternoon and evening, and at 11 p.m. we crossed the Antarctic Circle.<br><br><b>Passage 2</b><br>An examination of the horizon disclosed considerable breaks in the vast circle of pack-ice, interspersed with bergs of different sizes. Leads could be traced in various directions, but I looked in vain for an indication of open water. The sun did not set that night, and as it was concealed behind a bank of clouds we had a glow of crimson and gold to the southward, with delicate pale green reflections in the water of the lanes to the south-east.<br><br><b>Passage 3</b><br>The ship had a serious encounter with the ice on the morning of December 31. We were stopped first by floes closing around us, and then about noon the Endurance got jammed between two floes heading east-north-east. The pressure heeled the ship over six degrees while we were getting an ice-anchor onto the floe in order to heave astern and thus assist the engines, which were running at full speed. The effort was successful.<br><br><b>Passage 4</b><br>Immediately afterwards, at the spot where the Endurance had been held, slabs of ice 50 ft. by 15 ft. and 4 ft. thick were forced ten or twelve feet up on the lee floe at an angle of 45°. The pressure was severe, and we were not sorry to have the ship out of its reach. The noon position was lat. 66° 47′ S., long. 15° 52′ W., and the run for the preceding twenty-four hours was 51 miles S. 29° E.<br><br><b>Passage 5</b><br>Worsley came down from his lofty seat and met Wild, Hudson, and myself on the bridge, where we shook hands and wished one another a happy and successful New Year. Since entering the pack on December 11, we had come 480 miles, through loose and close pack-ice.<br><br><b>Passage 6</b><br>We had pushed and fought the little ship through, and she had stood the test well, though the propeller had received some shrewd blows against hard ice and the vessel had been driven against the floe until she had fairly mounted up on it and slid back rolling heavily from side to side.",
+    "question": "Arush scanned the text to find out when the ship crossed the Antarctic Circle. What time did it cross?",
+    "options": [
+      "At noon",
+      "At midnight",
+      "In the evening of December 29",
+      "At 11 p.m."
+    ],
+    "correct": 3
+  },
+  {
+    "questionNo": "Q4",
+    "story": "<b>\"South\"<br>by Ernest Shackleton (1919)</b><br><br><b>Passage 1</b><br>The high winds that had prevailed for four and a half days gave way to a gentle southerly breeze in the evening of December 29. Owing to the drift, we were actually eleven miles farther north than we had been on December 25. But we made fairly good progress on the 30th in fine, clear weather. The ship followed a long lead to the south-east during the afternoon and evening, and at 11 p.m. we crossed the Antarctic Circle.<br><br><b>Passage 2</b><br>An examination of the horizon disclosed considerable breaks in the vast circle of pack-ice, interspersed with bergs of different sizes. Leads could be traced in various directions, but I looked in vain for an indication of open water. The sun did not set that night, and as it was concealed behind a bank of clouds we had a glow of crimson and gold to the southward, with delicate pale green reflections in the water of the lanes to the south-east.<br><br><b>Passage 3</b><br>The ship had a serious encounter with the ice on the morning of December 31. We were stopped first by floes closing around us, and then about noon the Endurance got jammed between two floes heading east-north-east. The pressure heeled the ship over six degrees while we were getting an ice-anchor onto the floe in order to heave astern and thus assist the engines, which were running at full speed. The effort was successful.<br><br><b>Passage 4</b><br>Immediately afterwards, at the spot where the Endurance had been held, slabs of ice 50 ft. by 15 ft. and 4 ft. thick were forced ten or twelve feet up on the lee floe at an angle of 45°. The pressure was severe, and we were not sorry to have the ship out of its reach. The noon position was lat. 66° 47′ S., long. 15° 52′ W., and the run for the preceding twenty-four hours was 51 miles S. 29° E.<br><br><b>Passage 5</b><br>Worsley came down from his lofty seat and met Wild, Hudson, and myself on the bridge, where we shook hands and wished one another a happy and successful New Year. Since entering the pack on December 11, we had come 480 miles, through loose and close pack-ice.<br><br><b>Passage 6</b><br>We had pushed and fought the little ship through, and she had stood the test well, though the propeller had received some shrewd blows against hard ice and the vessel had been driven against the floe until she had fairly mounted up on it and slid back rolling heavily from side to side.",
+    "question": "According to Passage 5, how far had the ship travelled since entering the pack on December 11?",
+    "options": [
+      "11 miles",
+      "51 miles",
+      "480 miles",
+      "45 miles"
+    ],
+    "correct": 2
+  },
+  {
+    "questionNo": "Q5",
+    "story": "<b>\"South\"<br>by Ernest Shackleton (1919)</b><br><br><b>Passage 1</b><br>The high winds that had prevailed for four and a half days gave way to a gentle southerly breeze in the evening of December 29. Owing to the drift, we were actually eleven miles farther north than we had been on December 25. But we made fairly good progress on the 30th in fine, clear weather. The ship followed a long lead to the south-east during the afternoon and evening, and at 11 p.m. we crossed the Antarctic Circle.<br><br><b>Passage 2</b><br>An examination of the horizon disclosed considerable breaks in the vast circle of pack-ice, interspersed with bergs of different sizes. Leads could be traced in various directions, but I looked in vain for an indication of open water. The sun did not set that night, and as it was concealed behind a bank of clouds we had a glow of crimson and gold to the southward, with delicate pale green reflections in the water of the lanes to the south-east.<br><br><b>Passage 3</b><br>The ship had a serious encounter with the ice on the morning of December 31. We were stopped first by floes closing around us, and then about noon the Endurance got jammed between two floes heading east-north-east. The pressure heeled the ship over six degrees while we were getting an ice-anchor onto the floe in order to heave astern and thus assist the engines, which were running at full speed. The effort was successful.<br><br><b>Passage 4</b><br>Immediately afterwards, at the spot where the Endurance had been held, slabs of ice 50 ft. by 15 ft. and 4 ft. thick were forced ten or twelve feet up on the lee floe at an angle of 45°. The pressure was severe, and we were not sorry to have the ship out of its reach. The noon position was lat. 66° 47′ S., long. 15° 52′ W., and the run for the preceding twenty-four hours was 51 miles S. 29° E.<br><br><b>Passage 5</b><br>Worsley came down from his lofty seat and met Wild, Hudson, and myself on the bridge, where we shook hands and wished one another a happy and successful New Year. Since entering the pack on December 11, we had come 480 miles, through loose and close pack-ice.<br><br><b>Passage 6</b><br>We had pushed and fought the little ship through, and she had stood the test well, though the propeller had received some shrewd blows against hard ice and the vessel had been driven against the floe until she had fairly mounted up on it and slid back rolling heavily from side to side.",
+    "question": "In Passage 3, by how many degrees did the ship tilt when it was trapped between the floes?",
+    "options": [
+      "45 degrees",
+      "Six degrees",
+      "29 degrees",
+      "66 degrees"
+    ],
+    "correct": 1
+  },
+  {
+    "questionNo": "Q6",
+    "story": "<b>\"South\"<br>by Ernest Shackleton (1919)</b><br><br><b>Passage 1</b><br>The high winds that had prevailed for four and a half days gave way to a gentle southerly breeze in the evening of December 29. Owing to the drift, we were actually eleven miles farther north than we had been on December 25. But we made fairly good progress on the 30th in fine, clear weather. The ship followed a long lead to the south-east during the afternoon and evening, and at 11 p.m. we crossed the Antarctic Circle.<br><br><b>Passage 2</b><br>An examination of the horizon disclosed considerable breaks in the vast circle of pack-ice, interspersed with bergs of different sizes. Leads could be traced in various directions, but I looked in vain for an indication of open water. The sun did not set that night, and as it was concealed behind a bank of clouds we had a glow of crimson and gold to the southward, with delicate pale green reflections in the water of the lanes to the south-east.<br><br><b>Passage 3</b><br>The ship had a serious encounter with the ice on the morning of December 31. We were stopped first by floes closing around us, and then about noon the Endurance got jammed between two floes heading east-north-east. The pressure heeled the ship over six degrees while we were getting an ice-anchor onto the floe in order to heave astern and thus assist the engines, which were running at full speed. The effort was successful.<br><br><b>Passage 4</b><br>Immediately afterwards, at the spot where the Endurance had been held, slabs of ice 50 ft. by 15 ft. and 4 ft. thick were forced ten or twelve feet up on the lee floe at an angle of 45°. The pressure was severe, and we were not sorry to have the ship out of its reach. The noon position was lat. 66° 47′ S., long. 15° 52′ W., and the run for the preceding twenty-four hours was 51 miles S. 29° E.<br><br><b>Passage 5</b><br>Worsley came down from his lofty seat and met Wild, Hudson, and myself on the bridge, where we shook hands and wished one another a happy and successful New Year. Since entering the pack on December 11, we had come 480 miles, through loose and close pack-ice.<br><br><b>Passage 6</b><br>We had pushed and fought the little ship through, and she had stood the test well, though the propeller had received some shrewd blows against hard ice and the vessel had been driven against the floe until she had fairly mounted up on it and slid back rolling heavily from side to side.",
+    "question": "After reading Passage 3, Rishi was asked how the crew pulled the ship backwards out of the ice. What should he answer?",
+    "options": [
+      "They cut through the floe with axes.",
+      "They waited for the floes to drift apart.",
+      "They lowered a lifeboat to tow the ship.",
+      "They fixed an ice-anchor to the floe and ran the engines at full speed."
+    ],
+    "correct": 3
+  },
+  {
+    "questionNo": "Q7",
+    "story": "<b>\"South\"<br>by Ernest Shackleton (1919)</b><br><br><b>Passage 1</b><br>The high winds that had prevailed for four and a half days gave way to a gentle southerly breeze in the evening of December 29. Owing to the drift, we were actually eleven miles farther north than we had been on December 25. But we made fairly good progress on the 30th in fine, clear weather. The ship followed a long lead to the south-east during the afternoon and evening, and at 11 p.m. we crossed the Antarctic Circle.<br><br><b>Passage 2</b><br>An examination of the horizon disclosed considerable breaks in the vast circle of pack-ice, interspersed with bergs of different sizes. Leads could be traced in various directions, but I looked in vain for an indication of open water. The sun did not set that night, and as it was concealed behind a bank of clouds we had a glow of crimson and gold to the southward, with delicate pale green reflections in the water of the lanes to the south-east.<br><br><b>Passage 3</b><br>The ship had a serious encounter with the ice on the morning of December 31. We were stopped first by floes closing around us, and then about noon the Endurance got jammed between two floes heading east-north-east. The pressure heeled the ship over six degrees while we were getting an ice-anchor onto the floe in order to heave astern and thus assist the engines, which were running at full speed. The effort was successful.<br><br><b>Passage 4</b><br>Immediately afterwards, at the spot where the Endurance had been held, slabs of ice 50 ft. by 15 ft. and 4 ft. thick were forced ten or twelve feet up on the lee floe at an angle of 45°. The pressure was severe, and we were not sorry to have the ship out of its reach. The noon position was lat. 66° 47′ S., long. 15° 52′ W., and the run for the preceding twenty-four hours was 51 miles S. 29° E.<br><br><b>Passage 5</b><br>Worsley came down from his lofty seat and met Wild, Hudson, and myself on the bridge, where we shook hands and wished one another a happy and successful New Year. Since entering the pack on December 11, we had come 480 miles, through loose and close pack-ice.<br><br><b>Passage 6</b><br>We had pushed and fought the little ship through, and she had stood the test well, though the propeller had received some shrewd blows against hard ice and the vessel had been driven against the floe until she had fairly mounted up on it and slid back rolling heavily from side to side.",
+    "question": "The teacher asked Naomi to read Passage 4 and write down only what happened to the ice where the Endurance had been held. Which answer should she give?",
+    "options": [
+      "The pressure was severe, and the crew were not sorry to escape it.",
+      "Slabs of ice 50 ft long, 15 ft wide and 4 ft thick were pushed ten or twelve feet up onto the lee floe, at an angle of 45°.",
+      "Slabs of ice 50 ft long were pushed 45 ft up onto the floe.",
+      "The ship's noon position was 66° 47′ S., 15° 52′ W."
+    ],
+    "correct": 1
+  },
+  {
+    "questionNo": "Q8",
+    "story": "<b>\"South\"<br>by Ernest Shackleton (1919)</b><br><br><b>Passage 1</b><br>The high winds that had prevailed for four and a half days gave way to a gentle southerly breeze in the evening of December 29. Owing to the drift, we were actually eleven miles farther north than we had been on December 25. But we made fairly good progress on the 30th in fine, clear weather. The ship followed a long lead to the south-east during the afternoon and evening, and at 11 p.m. we crossed the Antarctic Circle.<br><br><b>Passage 2</b><br>An examination of the horizon disclosed considerable breaks in the vast circle of pack-ice, interspersed with bergs of different sizes. Leads could be traced in various directions, but I looked in vain for an indication of open water. The sun did not set that night, and as it was concealed behind a bank of clouds we had a glow of crimson and gold to the southward, with delicate pale green reflections in the water of the lanes to the south-east.<br><br><b>Passage 3</b><br>The ship had a serious encounter with the ice on the morning of December 31. We were stopped first by floes closing around us, and then about noon the Endurance got jammed between two floes heading east-north-east. The pressure heeled the ship over six degrees while we were getting an ice-anchor onto the floe in order to heave astern and thus assist the engines, which were running at full speed. The effort was successful.<br><br><b>Passage 4</b><br>Immediately afterwards, at the spot where the Endurance had been held, slabs of ice 50 ft. by 15 ft. and 4 ft. thick were forced ten or twelve feet up on the lee floe at an angle of 45°. The pressure was severe, and we were not sorry to have the ship out of its reach. The noon position was lat. 66° 47′ S., long. 15° 52′ W., and the run for the preceding twenty-four hours was 51 miles S. 29° E.<br><br><b>Passage 5</b><br>Worsley came down from his lofty seat and met Wild, Hudson, and myself on the bridge, where we shook hands and wished one another a happy and successful New Year. Since entering the pack on December 11, we had come 480 miles, through loose and close pack-ice.<br><br><b>Passage 6</b><br>We had pushed and fought the little ship through, and she had stood the test well, though the propeller had received some shrewd blows against hard ice and the vessel had been driven against the floe until she had fairly mounted up on it and slid back rolling heavily from side to side.",
+    "question": "After reading Passage 2, Elliot was asked what the sky looked like on the night the ship crossed the Antarctic Circle. Which answer gives the facts correctly?",
+    "options": [
+      "A crimson and gold glow to the south, with pale green reflections in the water to the south-east",
+      "A glow, with reflections in the water",
+      "The sun set behind a bank of clouds, leaving the sky dark",
+      "The sky was grey, with no light at all"
+    ],
+    "correct": 0
+  },
+  {
+    "questionNo": "Q9",
+    "story": "<b>\"South\"<br>by Ernest Shackleton (1919)</b><br><br><b>Passage 1</b><br>The high winds that had prevailed for four and a half days gave way to a gentle southerly breeze in the evening of December 29. Owing to the drift, we were actually eleven miles farther north than we had been on December 25. But we made fairly good progress on the 30th in fine, clear weather. The ship followed a long lead to the south-east during the afternoon and evening, and at 11 p.m. we crossed the Antarctic Circle.<br><br><b>Passage 2</b><br>An examination of the horizon disclosed considerable breaks in the vast circle of pack-ice, interspersed with bergs of different sizes. Leads could be traced in various directions, but I looked in vain for an indication of open water. The sun did not set that night, and as it was concealed behind a bank of clouds we had a glow of crimson and gold to the southward, with delicate pale green reflections in the water of the lanes to the south-east.<br><br><b>Passage 3</b><br>The ship had a serious encounter with the ice on the morning of December 31. We were stopped first by floes closing around us, and then about noon the Endurance got jammed between two floes heading east-north-east. The pressure heeled the ship over six degrees while we were getting an ice-anchor onto the floe in order to heave astern and thus assist the engines, which were running at full speed. The effort was successful.<br><br><b>Passage 4</b><br>Immediately afterwards, at the spot where the Endurance had been held, slabs of ice 50 ft. by 15 ft. and 4 ft. thick were forced ten or twelve feet up on the lee floe at an angle of 45°. The pressure was severe, and we were not sorry to have the ship out of its reach. The noon position was lat. 66° 47′ S., long. 15° 52′ W., and the run for the preceding twenty-four hours was 51 miles S. 29° E.<br><br><b>Passage 5</b><br>Worsley came down from his lofty seat and met Wild, Hudson, and myself on the bridge, where we shook hands and wished one another a happy and successful New Year. Since entering the pack on December 11, we had come 480 miles, through loose and close pack-ice.<br><br><b>Passage 6</b><br>We had pushed and fought the little ship through, and she had stood the test well, though the propeller had received some shrewd blows against hard ice and the vessel had been driven against the floe until she had fairly mounted up on it and slid back rolling heavily from side to side.",
+    "question": "Pooja made notes on Passage 6 to answer the question: \"How was the ship affected by the ice?\" Which set of notes is correct?",
+    "options": [
+      "\"We had pushed and fought the little ship through, and she had stood the test well, though the propeller had received some shrewd blows against hard ice.\"",
+      "Propeller broken by hard ice; ship forced to stop and turn back.",
+      "Propeller hit hard ice several times; ship driven up onto a floe, then slid back, rolling heavily.",
+      "The brave little ship fought nobly through the cruel ice."
+    ],
+    "correct": 2
+  },
+  {
+    "questionNo": "Q10",
+    "story": "<b>\"South\"<br>by Ernest Shackleton (1919)</b><br><br><b>Passage 1</b><br>The high winds that had prevailed for four and a half days gave way to a gentle southerly breeze in the evening of December 29. Owing to the drift, we were actually eleven miles farther north than we had been on December 25. But we made fairly good progress on the 30th in fine, clear weather. The ship followed a long lead to the south-east during the afternoon and evening, and at 11 p.m. we crossed the Antarctic Circle.<br><br><b>Passage 2</b><br>An examination of the horizon disclosed considerable breaks in the vast circle of pack-ice, interspersed with bergs of different sizes. Leads could be traced in various directions, but I looked in vain for an indication of open water. The sun did not set that night, and as it was concealed behind a bank of clouds we had a glow of crimson and gold to the southward, with delicate pale green reflections in the water of the lanes to the south-east.<br><br><b>Passage 3</b><br>The ship had a serious encounter with the ice on the morning of December 31. We were stopped first by floes closing around us, and then about noon the Endurance got jammed between two floes heading east-north-east. The pressure heeled the ship over six degrees while we were getting an ice-anchor onto the floe in order to heave astern and thus assist the engines, which were running at full speed. The effort was successful.<br><br><b>Passage 4</b><br>Immediately afterwards, at the spot where the Endurance had been held, slabs of ice 50 ft. by 15 ft. and 4 ft. thick were forced ten or twelve feet up on the lee floe at an angle of 45°. The pressure was severe, and we were not sorry to have the ship out of its reach. The noon position was lat. 66° 47′ S., long. 15° 52′ W., and the run for the preceding twenty-four hours was 51 miles S. 29° E.<br><br><b>Passage 5</b><br>Worsley came down from his lofty seat and met Wild, Hudson, and myself on the bridge, where we shook hands and wished one another a happy and successful New Year. Since entering the pack on December 11, we had come 480 miles, through loose and close pack-ice.<br><br><b>Passage 6</b><br>We had pushed and fought the little ship through, and she had stood the test well, though the propeller had received some shrewd blows against hard ice and the vessel had been driven against the floe until she had fairly mounted up on it and slid back rolling heavily from side to side.",
+    "question": "Tanya made notes on Passage 3 to answer the question: \"What happened to the ship on December 31?\" Which set of notes is correct?",
+    "options": [
+      "\"The ship had a serious encounter with the ice on the morning of December 31. We were stopped first by floes closing around us.\"",
+      "Stopped by closing floes in the morning; jammed between two floes about noon; tilted six degrees; freed using an ice-anchor and the engines.",
+      "Stopped by floes; jammed; a hole was torn in the ship's side; crew rushed to the pumps.",
+      "A terrible, frightening day that the crew were glad to see the end of."
+    ],
+    "correct": 1
+  }
+
+
+]
+
+        window.onload = () => {
+            renderButtons();
+            renderStory();
+            renderQuestion();
+        };
+
+        function renderButtons() {
+            const container = document.getElementById('questionButtons');
+            container.innerHTML = '';
+            data.forEach((item, index) => {
+                const btn = document.createElement('button');
+                btn.innerText = item.questionNo;
+                btn.className = 'qBtn' + (index === currentIndex ? ' active' : '');
+                btn.onclick = () => {
+                    currentIndex = index;
+                    selectedAnswer = null;
+                    renderStory();
+                    renderQuestion();
+                };
+                container.appendChild(btn);
+            });
+        }
+
+        function renderStory() {
+            const storyContent = document.getElementById('storyContent');
+            const q = data[currentIndex];
+            
+            if (q.story && Array.isArray(q.story)) {
+                storyContent.innerHTML = q.story.join('');
+            } else if (q.story) {
+                storyContent.innerHTML = q.story;
+            } else {
+                storyContent.innerHTML = '<p>No story content available.</p>';
+            }
+        }
+
+        function renderQuestion() {
+            const questionContent = document.getElementById('questionContent');
+            const finalScreen = document.getElementById('finalScreen');
+
+            if (currentIndex >= data.length) {
+    questionContent.style.display = 'none';
+    finalScreen.style.display = 'flex';
+
+    // Enable full screen final view
+    document.querySelector('.activity').classList.add('fullscreen-final');
+
+    return;
+}
+
+
+            const q = data[currentIndex];
+            let html = '';
+
+            html += `<h3 class='questionText'>${q.question}</h3>`;
+            html += `<div class="optionGrid">`;
+            
+            q.options.forEach((opt, idx) => {
+                html += `<button class="optionBtn" onclick="handleOptionClick(${idx})">${opt}</button>`;
+            });
+
+            html += `</div>`;
+            html += `<div class="feedbackSection">
+                        <p class="feedbackText" id="feedbackText"></p>
+                        <button class="nextBtn" id="nextBtn" style="display:none;" onclick="handleNext()">Next</button>
+                     </div>`;
+
+            questionContent.innerHTML = html;
+            questionContent.style.display = 'block';
+            finalScreen.style.display = 'none';
+            renderButtons();
+        }
+
+        function handleOptionClick(index) {
+            if (selectedAnswer !== null) return;
+
+            selectedAnswer = index;
+            const q = data[currentIndex];
+            const feedback = document.getElementById('feedbackText');
+            const nextBtn = document.getElementById('nextBtn');
+            const optionBtns = document.querySelectorAll('.optionBtn');
+
+            optionBtns.forEach((btn) => {
+                btn.style.pointerEvents = 'none';
+            });
+
+            if (index === q.correct) {
+                optionBtns[index].classList.add('correct');
+                feedback.innerHTML = `<span class='emoji'>✅</span> Correct! Great job!`;
+                feedback.style.color = '#4CAF50';
+                nextBtn.innerText = currentIndex + 1 < data.length ? 'Next' : 'Finish';
+                nextBtn.style.display = 'block';
+            } else {
+                optionBtns[index].classList.add('incorrect');
+                feedback.innerHTML = `<span class='emoji'>❌</span> Try again!`;
+                feedback.style.color = '#f44336';
+
+                optionBtns.forEach((btn, idx) => {
+                    if (idx !== index) {
+                        btn.style.pointerEvents = 'auto';
+                    }
+                });
+                selectedAnswer = null;
+            }
+        }
+
+        function handleNext() {
+            if (currentIndex + 1 < data.length) {
+                currentIndex++;
+                selectedAnswer = null;
+                renderStory();
+                renderQuestion();
+            } else {
+                currentIndex++;
+                renderQuestion();
+            }
+        }
+    </script>
+</body>
+
+</html>
